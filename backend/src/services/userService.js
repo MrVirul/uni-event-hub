@@ -1,5 +1,5 @@
 import User from '../Models/User.js';
-import jwt from 'jsonwebtoken';
+import generateToken from '../utils/generateToken.js';
 
 export const registerUser = async (userData) => {
   const { username, email, password, profileImage } = userData;
@@ -7,13 +7,17 @@ export const registerUser = async (userData) => {
   // Check existing email
   const existingEmail = await User.findOne({ email });
   if (existingEmail) {
-    throw new Error('Email already exists');
+    const error = new Error('Email already exists');
+    error.status = 400;
+    throw error;
   }
 
   // Check existing username
   const existingUserName = await User.findOne({ username });
   if (existingUserName) {
-    throw new Error('Username already exists');
+    const error = new Error('Username already exists');
+    error.status = 400;
+    throw error;
   }
 
   // Create user
@@ -40,6 +44,41 @@ export const registerUser = async (userData) => {
   };
 };
 
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '180d' });
+export const loginUser = async ({ email, password }) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    const error = new Error('Invalid email or password');
+    error.status = 401;
+    throw error;
+  }
+
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    const error = new Error('Invalid email or password');
+    error.status = 401;
+    throw error;
+  }
+
+  const token = generateToken(user._id);
+
+  return {
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      profileImage: user.profileImage,
+    },
+    token,
+  };
+};
+
+export const getUserProfile = async (userId) => {
+  const user = await User.findById(userId).select('-password');
+  if (!user) {
+    const error = new Error('User not found');
+    error.status = 404;
+    throw error;
+  }
+  return user;
 };
