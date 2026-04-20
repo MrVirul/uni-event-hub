@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
     "test": "echo \"No tests specified yet\" && exit 0",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
