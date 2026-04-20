@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -18,7 +19,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    min: 8,
+    minlength: 8,
   },
   role: {
     type: String,
@@ -31,16 +32,18 @@ const userSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 
   profileImage: {
     type: String,
-    default: 'https://api.dicebear.com/7.x/avataaars/svg?seed=${username}',
+    default: function () {
+      return `https://api.dicebear.com/7.x/avataaars/svg?seed=${this.username}`;
+    },
     //       function () {
     //   if (this.gender === 'male') {
     //     return 'https://api.dicebear.com/9.x/lorelei/svg?seed=Alexander';
@@ -50,6 +53,16 @@ const userSchema = new mongoose.Schema({
     //   }
     // },
   },
+});
+
+//hashong the password before saving the user
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) {
+    return;
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 const User = mongoose.model('User', userSchema);
