@@ -1,0 +1,7 @@
+info:
+  name: production-be
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

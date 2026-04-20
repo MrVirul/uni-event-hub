@@ -1,0 +1,7 @@
+info:
+  name: dev-be
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
