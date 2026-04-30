@@ -1,5 +1,10 @@
 import React from "react";
-import { Text, View, TouchableOpacity, useWindowDimensions } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
 import { Link } from "expo-router";
 import { Image } from "expo-image";
 import Animated, {
@@ -10,10 +15,22 @@ import Animated, {
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { storage } from "../lib/storage";
 
 export default function Index() {
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    const token = await storage.getItem("userToken");
+    setIsLoggedIn(!!token);
+  };
+
   const { width, height } = useWindowDimensions();
-  
+
   // Responsive Scaling Logic
   const isSmallDevice = width < 380;
   const headlineSize = isSmallDevice ? "text-3xl" : "text-[44px]";
@@ -27,11 +44,11 @@ export default function Index() {
       edges={["top", "bottom", "left", "right"]}
     >
       <StatusBar style="dark" />
-      <View 
+      <View
         className="flex-1 px-8 justify-between"
-        style={{ 
-          paddingTop: height * 0.05, 
-          paddingBottom: height * 0.04 
+        style={{
+          paddingTop: height * 0.05,
+          paddingBottom: height * 0.04,
         }}
       >
         {/* Section 1: Minimalist Brand Identity */}
@@ -40,7 +57,9 @@ export default function Index() {
           className="flex-row items-center justify-between"
         >
           <View className="flex-row items-center">
-            <View className={`${logoSize} rounded-xl items-center justify-center mr-3`}>
+            <View
+              className={`${logoSize} rounded-xl items-center justify-center mr-3`}
+            >
               <Image
                 source={require("../assets/images/logo.png")}
                 style={{ width: "100%", height: "100%" }}
@@ -48,7 +67,9 @@ export default function Index() {
                 transition={1000}
               />
             </View>
-            <Text className={`text-primary font-bold ${isSmallDevice ? "text-lg" : "text-xl"} tracking-tight`}>
+            <Text
+              className={`text-primary font-bold ${isSmallDevice ? "text-lg" : "text-xl"} tracking-tight`}
+            >
               SLIIT Events
             </Text>
           </View>
@@ -60,7 +81,7 @@ export default function Index() {
             entering={FadeInDown.delay(400).duration(1000).springify()}
             className="relative"
           >
-            <View 
+            <View
               className="w-full rounded-[32px] overflow-hidden shadow-2xl shadow-primary/20 bg-primary/10"
               style={{ aspectRatio: isSmallDevice ? 1.2 : 0.8 }}
             >
@@ -78,13 +99,12 @@ export default function Index() {
             entering={FadeInDown.delay(600).duration(800)}
             className={`${isSmallDevice ? "mt-6" : "mt-10"}`}
           >
-            <Text className={`text-primary font-black ${headlineSize} leading-tight tracking-tighter`}>
+            <Text
+              className={`text-primary font-black ${headlineSize} leading-tight tracking-tighter`}
+            >
               The Full Circle of{"\n"}
               <Text className="text-accent">SLIIT</Text>
               <Text className="text-primary"> Life</Text>
-            </Text>
-            <Text className={`text-muted-foreground ${subheadlineSize} mt-3 font-medium leading-6 opacity-80`}>
-              Discover the best of SLIIT life.
             </Text>
           </Animated.View>
         </View>
@@ -95,29 +115,37 @@ export default function Index() {
             entering={FadeInUp.delay(800).duration(800)}
             className="gap-y-4"
           >
-            <Link href="/register" asChild>
+            <Link href={isLoggedIn ? "/profile" : "/register"} asChild>
               <TouchableOpacity
                 activeOpacity={0.9}
                 className={`bg-accent ${ctaHeight} rounded-3xl flex-row items-center justify-center shadow-xl shadow-accent/40`}
               >
-                <Text className={`text-primary font-black ${isSmallDevice ? "text-lg" : "text-xl"} mr-2`}>
-                  Get Started
+                <Text
+                  className={`text-primary font-black ${isSmallDevice ? "text-lg" : "text-xl"} mr-2`}
+                >
+                  {isLoggedIn ? "Go to Profile" : "Get Started"}
                 </Text>
-                <Ionicons name="arrow-forward" size={isSmallDevice ? 18 : 20} color="#1D264F" />
+                <Ionicons
+                  name={isLoggedIn ? "person-outline" : "arrow-forward"}
+                  size={isSmallDevice ? 18 : 20}
+                  color="#1D264F"
+                />
               </TouchableOpacity>
             </Link>
 
-            <Link href="/login" asChild>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                className="py-2 items-center justify-center"
-              >
-                <Text className="text-primary/60 font-bold text-base text-center">
-                  Already a member?{" "}
-                  <Text className="text-primary font-black">Log In</Text>
-                </Text>
-              </TouchableOpacity>
-            </Link>
+            {!isLoggedIn && (
+              <Link href="/login" asChild>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  className="py-2 items-center justify-center"
+                >
+                  <Text className="text-primary/60 font-bold text-base text-center">
+                    Already a member?{" "}
+                    <Text className="text-primary font-black">Log In</Text>
+                  </Text>
+                </TouchableOpacity>
+              </Link>
+            )}
           </Animated.View>
         </View>
       </View>
