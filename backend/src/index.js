@@ -25,6 +25,8 @@ if (!fs.existsSync(uploadsDir)) {
 // CORS configuration
 const allowedOrigins = [
   "http://localhost:8081",
+  "http://localhost:8080",
+  "http://localhost:3000",
   "https://interunieventhub.vercel.app"
 ];
 
@@ -43,7 +45,7 @@ app.use(cors({
 }));
 
 // Handle preflight requests for all routes (Express 5 compatible)
-app.options("/:any(*)", cors());
+app.options("/{*path}", cors());
 
 app.use(express.json());
 app.use('/uploads', express.static(uploadsDir));
