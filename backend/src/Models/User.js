@@ -43,12 +43,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  profileImage: {
-    type: String,
-    default: function () {
-      return `https://api.dicebear.com/7.x/avataaars/svg?seed=${this.name}`;
-    },
-  },
 });
 
 //hashong the password before saving the user

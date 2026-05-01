@@ -2,7 +2,7 @@ import User from '../Models/User.js';
 import generateToken from '../utils/generateToken.js';
 
 export const registerUser = async (userData) => {
-  const { name, email, studentNumber, phoneNumber, password, profileImage } = userData;
+  const { name, email, studentNumber, phoneNumber, password } = userData;
 
   // Check existing email
   const existingEmail = await User.findOne({ email });
@@ -27,7 +27,6 @@ export const registerUser = async (userData) => {
     studentNumber,
     phoneNumber,
     password,
-    profileImage,
   });
 
   await user.save();
@@ -42,7 +41,6 @@ export const registerUser = async (userData) => {
       studentNumber: user.studentNumber,
       phoneNumber: user.phoneNumber,
       role: user.role,
-      profileImage: user.profileImage,
     },
     token,
   };
@@ -73,7 +71,6 @@ export const loginUser = async ({ email, password }) => {
       studentNumber: user.studentNumber,
       phoneNumber: user.phoneNumber,
       role: user.role,
-      profileImage: user.profileImage,
     },
     token,
   };

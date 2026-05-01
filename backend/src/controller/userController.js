@@ -3,7 +3,6 @@ import * as userService from '../services/userService.js';
 export const register = async (req, res, next) => {
   try {
     const { name, email, studentNumber, phoneNumber, password } = req.body;
-    let profileImage = req.file ? req.file.path : undefined;
 
     // Validation (Request level)
     if (!name || !email || !studentNumber || !phoneNumber || !password) {
@@ -25,7 +24,6 @@ export const register = async (req, res, next) => {
       studentNumber,
       phoneNumber,
       password,
-      profileImage,
     });
 
     res.status(201).json({
