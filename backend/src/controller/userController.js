@@ -2,10 +2,10 @@ import * as userService from '../services/userService.js';
 
 export const register = async (req, res, next) => {
   try {
-    const { username, email, password, profileImage } = req.body;
+    const { name, email, studentNumber, phoneNumber, password } = req.body;
 
     // Validation (Request level)
-    if (!username || !email || !password) {
+    if (!name || !email || !studentNumber || !phoneNumber || !password) {
       const error = new Error('All fields are required');
       error.status = 400;
       throw error;
@@ -17,18 +17,13 @@ export const register = async (req, res, next) => {
       throw error;
     }
 
-    if (username.length < 3) {
-      const error = new Error('Username must be at least 3 characters long');
-      error.status = 400;
-      throw error;
-    }
-
     // Call service for business logic
     const { user, token } = await userService.registerUser({
-      username,
+      name,
       email,
+      studentNumber,
+      phoneNumber,
       password,
-      profileImage,
     });
 
     res.status(201).json({

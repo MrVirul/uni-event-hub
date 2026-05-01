@@ -2,7 +2,7 @@ import User from '../Models/User.js';
 import generateToken from '../utils/generateToken.js';
 
 export const registerUser = async (userData) => {
-  const { username, email, password, profileImage } = userData;
+  const { name, email, studentNumber, phoneNumber, password } = userData;
 
   // Check existing email
   const existingEmail = await User.findOne({ email });
@@ -12,20 +12,21 @@ export const registerUser = async (userData) => {
     throw error;
   }
 
-  // Check existing username
-  const existingUserName = await User.findOne({ username });
-  if (existingUserName) {
-    const error = new Error('Username already exists');
+  // Check existing student number
+  const existingStudentNumber = await User.findOne({ studentNumber });
+  if (existingStudentNumber) {
+    const error = new Error('Student number already exists');
     error.status = 400;
     throw error;
   }
 
   // Create user
   const user = new User({
-    username,
+    name,
     email,
+    studentNumber,
+    phoneNumber,
     password,
-    profileImage,
   });
 
   await user.save();
@@ -35,10 +36,11 @@ export const registerUser = async (userData) => {
   return {
     user: {
       id: user._id,
-      username: user.username,
+      name: user.name,
       email: user.email,
+      studentNumber: user.studentNumber,
+      phoneNumber: user.phoneNumber,
       role: user.role,
-      profileImage: user.profileImage,
     },
     token,
   };
@@ -64,10 +66,11 @@ export const loginUser = async ({ email, password }) => {
   return {
     user: {
       id: user._id,
-      username: user.username,
+      name: user.name,
       email: user.email,
+      studentNumber: user.studentNumber,
+      phoneNumber: user.phoneNumber,
       role: user.role,
-      profileImage: user.profileImage,
     },
     token,
   };

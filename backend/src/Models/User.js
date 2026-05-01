@@ -2,17 +2,26 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
-  username: {
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  studentNumber: {
     type: String,
     required: true,
     unique: true,
     trim: true,
   },
-
   email: {
     type: String,
     required: true,
     unique: true,
+    trim: true,
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
     trim: true,
   },
   password: {
@@ -26,10 +35,6 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
-  gender: {
-    type: String,
-    enum: ['male', 'female'],
-  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -37,21 +42,6 @@ const userSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now,
-  },
-
-  profileImage: {
-    type: String,
-    default: function () {
-      return `https://api.dicebear.com/7.x/avataaars/svg?seed=${this.username}`;
-    },
-    //       function () {
-    //   if (this.gender === 'male') {
-    //     return 'https://api.dicebear.com/9.x/lorelei/svg?seed=Alexander';
-    //   }
-    //   if (this.gender === 'female') {
-    //     return 'https://api.dicebear.com/9.x/lorelei/svg?seed=Caleb';
-    //   }
-    // },
   },
 });
 
