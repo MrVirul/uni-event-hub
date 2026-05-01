@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, Platform, Alert, I
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { API_URL } from '../../constants/Config';
+
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -24,7 +26,7 @@ export default function MyClubsScreen() {
                 return;
             }
 
-            const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+
             const response = await fetch(`${API_URL}/api/clubs/my/all`, {
                 method: 'GET',
                 headers: {
@@ -57,7 +59,6 @@ export default function MyClubsScreen() {
                     onPress: async () => {
                         try {
                             const token = await AsyncStorage.getItem('token');
-                            const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
                             const response = await fetch(`${API_URL}/api/clubs/${id}`, {
                                 method: 'DELETE',
                                 headers: {

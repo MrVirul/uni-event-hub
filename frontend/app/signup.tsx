@@ -11,6 +11,8 @@ import {
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../constants/Config';
+
 
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -54,7 +56,6 @@ export default function SignupScreen() {
     setLoading(true);
 
     try {
-      const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
       
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',

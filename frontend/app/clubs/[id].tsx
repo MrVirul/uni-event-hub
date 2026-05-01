@@ -3,6 +3,8 @@ import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, Ac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { API_URL } from '../../constants/Config';
+
 
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -25,7 +27,7 @@ export default function EditClubScreen() {
 
     const fetchClubDetails = async () => {
         try {
-            const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+
             const response = await fetch(`${API_URL}/api/clubs/${id}`);
             
             if (!response.ok) {
@@ -54,7 +56,6 @@ export default function EditClubScreen() {
         setSaving(true);
         try {
             const token = await AsyncStorage.getItem('token');
-            const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
             
             const response = await fetch(`${API_URL}/api/clubs/${id}`, {
                 method: 'PUT',
