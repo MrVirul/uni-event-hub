@@ -42,8 +42,8 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// Handle preflight requests for all routes
-app.options("*", cors());
+// Handle preflight requests for all routes (Express 5 compatible)
+app.options("/:any(*)", cors());
 
 app.use(express.json());
 app.use('/uploads', express.static(uploadsDir));
