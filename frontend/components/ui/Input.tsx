@@ -31,18 +31,18 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   input: {
-    height: 40,
+    height: 48,
     width: '100%',
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#e4e4e7', // zinc-200
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#e2e8f0', // slate-200
     backgroundColor: '#ffffff',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 14,
-    color: '#09090b', // zinc-950
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: '#0f172a', // slate-900
   },
   inputError: {
-    borderColor: '#ef4444', // red-500
+    borderColor: '#e11d48', // rose-600
   },
 });

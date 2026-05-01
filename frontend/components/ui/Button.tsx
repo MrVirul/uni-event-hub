@@ -1,29 +1,44 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, TouchableOpacityProps, ActivityIndicator } from 'react-native';
+import React from "react";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  TouchableOpacityProps,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 
 interface ButtonProps extends TouchableOpacityProps {
   children: React.ReactNode;
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
-  size?: 'default' | 'sm' | 'lg' | 'icon';
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
+  size?: "default" | "sm" | "lg" | "icon";
   loading?: boolean;
+  textStyle?: any;
 }
 
-export function Button({ 
-  children, 
-  variant = 'default', 
-  size = 'default', 
+export function Button({
+  children,
+  variant = "default",
+  size = "default",
   loading = false,
-  style, 
+  style,
+  textStyle,
   disabled,
-  ...props 
+  ...props
 }: ButtonProps) {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       style={[
         styles.base,
-        styles[`${variant}Variant`],
-        styles[`${size}Size`],
+        (styles as any)[`${variant}Variant`],
+        (styles as any)[`${size}Size`],
         (disabled || loading) && styles.disabled,
         style,
       ]}
@@ -31,13 +46,22 @@ export function Button({
       {...props}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'default' || variant === 'destructive' ? '#fafafa' : '#09090b'} />
+        <ActivityIndicator
+          color={
+            variant === "default" || variant === "destructive"
+              ? "#fafafa"
+              : "#09090b"
+          }
+        />
       ) : (
-        <Text style={[
-          styles.textBase,
-          styles[`${variant}Text`],
-          styles[`${size}Text`]
-        ]}>
+        <Text
+          style={[
+            styles.textBase,
+            (styles as any)[`${variant}Text`],
+            (styles as any)[`${size}TextSize`],
+            textStyle,
+          ]}
+        >
           {children}
         </Text>
       )}
@@ -50,25 +74,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 6,
+    borderRadius: 10,
   },
   disabled: {
     opacity: 0.5,
   },
   // Variants
   defaultVariant: {
-    backgroundColor: '#09090b', // zinc-950
+    backgroundColor: '#0f172a', // slate-900
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   destructiveVariant: {
-    backgroundColor: '#ef4444', // red-500
+    backgroundColor: '#e11d48', // rose-600
+    shadowColor: '#e11d48',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   outlineVariant: {
     backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#e4e4e7', // zinc-200
+    borderWidth: 1.5,
+    borderColor: '#e2e8f0', // slate-200
   },
   secondaryVariant: {
-    backgroundColor: '#f4f4f5', // zinc-100
+    backgroundColor: '#f1f5f9', // slate-100
   },
   ghostVariant: {
     backgroundColor: 'transparent',
@@ -78,53 +112,54 @@ const styles = StyleSheet.create({
   },
   // Sizes
   defaultSize: {
-    height: 40,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    height: 44,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   smSize: {
     height: 36,
     paddingHorizontal: 12,
   },
   lgSize: {
-    height: 44,
+    height: 52,
     paddingHorizontal: 32,
   },
   iconSize: {
-    height: 40,
-    width: 40,
+    height: 44,
+    width: 44,
   },
   // Text Styles
   textBase: {
-    fontWeight: '500',
+    fontWeight: '600',
+    letterSpacing: 0.2,
   },
   defaultText: {
-    color: '#fafafa', // zinc-50
+    color: '#f8fafc', // slate-50
   },
   destructiveText: {
-    color: '#fafafa',
+    color: '#ffffff',
   },
   outlineText: {
-    color: '#09090b', // zinc-950
+    color: '#1e293b', // slate-800
   },
   secondaryText: {
-    color: '#09090b',
+    color: '#1e293b',
   },
   ghostText: {
-    color: '#09090b',
+    color: '#475569', // slate-600
   },
   linkText: {
-    color: '#09090b',
+    color: '#0f172a',
     textDecorationLine: 'underline',
   },
   // Text Sizes
   defaultTextSize: {
-    fontSize: 14,
+    fontSize: 15,
   },
   smTextSize: {
-    fontSize: 12,
+    fontSize: 13,
   },
   lgTextSize: {
-    fontSize: 16,
+    fontSize: 17,
   },
 });

@@ -2,6 +2,7 @@ import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
+import clubRoutes from './routes/clubRoutes.js';
 import { connectDB } from './lib/db.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 
@@ -34,6 +35,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/clubs', clubRoutes);
 
 // Error Handling Middleware (must be last)
 app.use(errorHandler);

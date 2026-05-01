@@ -10,9 +10,9 @@ export function Label({ style, ...props }: TextProps) {
 const styles = StyleSheet.create({
   label: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#09090b', // zinc-950
-    marginBottom: 8,
-    lineHeight: 14 * 1.4,
+    fontWeight: '600',
+    color: '#334155', // slate-700
+    marginBottom: 6,
+    letterSpacing: 0.1,
   },
 });

@@ -27,40 +27,46 @@ export function CardFooter({ style, ...props }: ViewProps) {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e4e4e7', // zinc-200
     backgroundColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#f1f5f9', // slate-100
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowRadius: 12,
+    elevation: 4,
   },
   header: {
     padding: 24,
     paddingBottom: 16,
     flexDirection: 'column',
-    gap: 6,
+    gap: 8,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#09090b',
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#0f172a', // slate-900
     letterSpacing: -0.5,
   },
   description: {
-    fontSize: 14,
-    color: '#71717a', // zinc-500
+    fontSize: 15,
+    color: '#64748b', // slate-500
+    lineHeight: 22,
   },
   content: {
-    padding: 24,
-    paddingTop: 0,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
   },
   footer: {
     padding: 24,
-    paddingTop: 0,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f1f5f9',
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#f8fafc',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
 });

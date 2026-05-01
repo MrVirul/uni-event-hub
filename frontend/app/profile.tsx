@@ -95,8 +95,19 @@ export default function ProfileScreen() {
             </View>
           </CardContent>
           
-          <CardFooter>
-            <Button variant="destructive" style={styles.logoutButton} onPress={handleLogout}>
+          <CardFooter style={styles.footer}>
+            <Button 
+              variant="default" 
+              style={styles.manageButton} 
+              onPress={() => router.push('/clubs/my')}
+            >
+              Manage My Clubs
+            </Button>
+            <Button 
+              variant="destructive" 
+              style={styles.logoutButton} 
+              onPress={handleLogout}
+            >
               Log Out
             </Button>
           </CardFooter>
@@ -151,6 +162,13 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 16,
     color: '#09090b',
+  },
+  footer: {
+    flexDirection: 'column',
+    gap: 8,
+  },
+  manageButton: {
+    width: '100%',
   },
   logoutButton: {
     width: '100%',
