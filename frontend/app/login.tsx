@@ -67,7 +67,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem('user', JSON.stringify(data.user));
 
       Alert.alert('Success', 'Login successful!', [
-        { text: 'OK', onPress: () => router.replace('/profile') }
+        { text: 'OK', onPress: () => router.replace('/home') }
       ]);
       
     } catch (error: any) {

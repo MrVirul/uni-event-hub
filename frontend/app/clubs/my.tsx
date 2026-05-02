@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, Platform, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, Platform, Alert, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { API_URL } from '../../constants/Config';
+import { Sidebar } from '../../components/ui/Sidebar';
 
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../components/ui/Card';
@@ -13,6 +15,7 @@ export default function MyClubsScreen() {
     const router = useRouter();
     const [clubs, setClubs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [sidebarVisible, setSidebarVisible] = useState(false);
 
     useEffect(() => {
         fetchMyClubs();
@@ -91,17 +94,25 @@ export default function MyClubsScreen() {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>My Clubs</Text>
-                    <Button size="sm" onPress={() => router.push('/clubs/create')}>
-                        Create Club
-                    </Button>
-                </View>
+            <Sidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
+            
+            <View style={styles.headerBar}>
+                <TouchableOpacity onPress={() => router.push('/clubs/create')}>
+                    <Ionicons name="add" size={28} color="#09090b" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>My Clubs</Text>
+                <TouchableOpacity onPress={() => setSidebarVisible(true)}>
+                    <Ionicons name="menu" size={28} color="#09090b" />
+                </TouchableOpacity>
+            </View>
 
+            <View style={styles.container}>
                 {clubs.length === 0 ? (
                     <View style={styles.emptyContainer}>
                         <Text style={styles.emptyText}>You haven't created any clubs yet.</Text>
+                        <Button style={{ marginTop: 16 }} onPress={() => router.push('/clubs/create')}>
+                            Create Your First Club
+                        </Button>
                     </View>
                 ) : (
                     <FlatList
@@ -112,7 +123,7 @@ export default function MyClubsScreen() {
                             <Card style={styles.clubCard}>
                                 <CardHeader style={styles.cardHeader}>
                                     <Image source={{ uri: item.image }} style={styles.clubImage} />
-                                    <View>
+                                    <View style={{ flex: 1 }}>
                                         <CardTitle>{item.name}</CardTitle>
                                         <CardDescription numberOfLines={1}>{item.description}</CardDescription>
                                     </View>
@@ -148,6 +159,22 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: '#fafafa',
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    },
+    headerBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+        backgroundColor: '#ffffff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#f4f4f5',
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: '#09090b',
     },
     centerContainer: {
         flex: 1,
@@ -157,17 +184,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#09090b',
     },
     listContent: {
         gap: 16,

@@ -77,3 +77,17 @@ export const getProfile = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const user = await userService.updateUserProfile(userId, req.body);
+
+    res.status(200).json({
+      message: 'Profile updated successfully',
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

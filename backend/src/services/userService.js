@@ -85,3 +85,30 @@ export const getUserProfile = async (userId) => {
   }
   return user;
 };
+
+export const updateUserProfile = async (userId, updateData) => {
+  const { name, email, studentNumber, phoneNumber } = updateData;
+  const user = await User.findById(userId);
+
+  if (!user) {
+    const error = new Error('User not found');
+    error.status = 404;
+    throw error;
+  }
+
+  if (name) user.name = name;
+  if (email) user.email = email;
+  if (studentNumber) user.studentNumber = studentNumber;
+  if (phoneNumber) user.phoneNumber = phoneNumber;
+
+  await user.save();
+
+  return {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    studentNumber: user.studentNumber,
+    phoneNumber: user.phoneNumber,
+    role: user.role,
+  };
+};
