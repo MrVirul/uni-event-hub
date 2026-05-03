@@ -1,11 +1,11 @@
 import express from 'express';
-import { 
-    createClub, 
-    getClubs, 
-    getMyClubs, 
-    getClub, 
-    updateClub, 
-    deleteClub 
+import {
+  createClub,
+  getClubs,
+  getMyClubs,
+  getClub,
+  updateClub,
+  deleteClub,
 } from '../controller/clubController.js';
 import { protect } from '../middleware/authMiddleware.js';
 

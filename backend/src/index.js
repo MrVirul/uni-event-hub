@@ -24,28 +24,30 @@ if (!fs.existsSync(uploadsDir)) {
 
 // CORS configuration
 const allowedOrigins = [
-  "http://localhost:8081",
-  "http://localhost:8080",
-  "http://localhost:3000",
-  "https://interunieventhub.vercel.app"
+  'http://localhost:8081',
+  'http://localhost:8080',
+  'http://localhost:3000',
+  'https://interunieventhub.vercel.app',
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (e.g. mobile apps, curl, Postman)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
 // Handle preflight requests for all routes (Express 5 compatible)
-app.options("/{*path}", cors());
+app.options('/{*path}', cors());
 
 app.use(express.json());
 app.use('/uploads', express.static(uploadsDir));
