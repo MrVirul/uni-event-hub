@@ -71,9 +71,9 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 10,
   },
   disabled: {
@@ -81,34 +81,34 @@ const styles = StyleSheet.create({
   },
   // Variants
   defaultVariant: {
-    backgroundColor: '#0f172a', // slate-900
-    shadowColor: '#0f172a',
+    backgroundColor: "#0f172a", // slate-900
+    shadowColor: "#0f172a",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
   },
   destructiveVariant: {
-    backgroundColor: '#e11d48', // rose-600
-    shadowColor: '#e11d48',
+    backgroundColor: "#e11d48", // rose-600
+    shadowColor: "#e11d48",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 3,
   },
   outlineVariant: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 1.5,
-    borderColor: '#e2e8f0', // slate-200
+    borderColor: "#e2e8f0", // slate-200
   },
   secondaryVariant: {
-    backgroundColor: '#f1f5f9', // slate-100
+    backgroundColor: "#f1f5f9", // slate-100
   },
   ghostVariant: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   linkVariant: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   // Sizes
   defaultSize: {
@@ -130,27 +130,27 @@ const styles = StyleSheet.create({
   },
   // Text Styles
   textBase: {
-    fontWeight: '600',
+    fontWeight: "600",
     letterSpacing: 0.2,
   },
   defaultText: {
-    color: '#f8fafc', // slate-50
+    color: "#f8fafc", // slate-50
   },
   destructiveText: {
-    color: '#ffffff',
+    color: "#ffffff",
   },
   outlineText: {
-    color: '#1e293b', // slate-800
+    color: "#1e293b", // slate-800
   },
   secondaryText: {
-    color: '#1e293b',
+    color: "#1e293b",
   },
   ghostText: {
-    color: '#475569', // slate-600
+    color: "#475569", // slate-600
   },
   linkText: {
-    color: '#0f172a',
-    textDecorationLine: 'underline',
+    color: "#0f172a",
+    textDecorationLine: "underline",
   },
   // Text Sizes
   defaultTextSize: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,35 +8,41 @@ import {
   Platform,
   Alert,
   Image,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '../constants/Config';
+} from "react-native";
+import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../constants/Config";
 
-
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Label } from "../components/ui/Label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/Card";
 
 export default function SignupScreen() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    studentNumber: '',
-    phoneNumber: '',
-    password: '',
+    name: "",
+    email: "",
+    studentNumber: "",
+    phoneNumber: "",
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);
 
   const handleChange = (name: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -45,23 +51,22 @@ export default function SignupScreen() {
 
     // Basic validation
     if (!name || !email || !studentNumber || !phoneNumber || !password) {
-      Alert.alert('Error', 'All fields are required');
+      Alert.alert("Error", "All fields are required");
       return;
     }
 
     if (password.length < 8) {
-      Alert.alert('Error', 'Password must be at least 8 characters long');
+      Alert.alert("Error", "Password must be at least 8 characters long");
       return;
     }
 
     setLoading(true);
 
     try {
-      
       const response = await fetch(`${API_URL}/api/auth/register`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -69,18 +74,19 @@ export default function SignupScreen() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong during registration');
+        throw new Error(
+          data.message || "Something went wrong during registration",
+        );
       }
 
-      await AsyncStorage.setItem('token', data.token);
-      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+      await AsyncStorage.setItem("token", data.token);
+      await AsyncStorage.setItem("user", JSON.stringify(data.user));
 
-      Alert.alert('Success', 'Account created successfully!', [
-        { text: 'OK', onPress: () => router.replace('/profile') }
+      Alert.alert("Success", "Account created successfully!", [
+        { text: "OK", onPress: () => router.replace("/profile") },
       ]);
-      
     } catch (error: any) {
-      Alert.alert('Registration Failed', error.message);
+      Alert.alert("Registration Failed", error.message);
     } finally {
       setLoading(false);
     }
@@ -88,23 +94,27 @@ export default function SignupScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-          
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
           <Card style={styles.card}>
             <CardHeader style={styles.cardHeader}>
               <View style={styles.logoBadge}>
                 <Image
-                  source={require('../assets/images/icon.png')}
+                  source={require("../assets/images/icon.png")}
                   style={styles.logoImage}
                   resizeMode="contain"
                 />
               </View>
               <CardTitle>Create an account</CardTitle>
-              <CardDescription>Enter your information below to sign up</CardDescription>
+              <CardDescription>
+                Enter your information below to sign up
+              </CardDescription>
             </CardHeader>
 
             <CardContent style={styles.cardContent}>
@@ -113,7 +123,7 @@ export default function SignupScreen() {
                 <Input
                   placeholder="John Doe"
                   value={formData.name}
-                  onChangeText={(text) => handleChange('name', text)}
+                  onChangeText={(text) => handleChange("name", text)}
                   autoCapitalize="words"
                 />
               </View>
@@ -123,7 +133,7 @@ export default function SignupScreen() {
                 <Input
                   placeholder="m@example.com"
                   value={formData.email}
-                  onChangeText={(text) => handleChange('email', text)}
+                  onChangeText={(text) => handleChange("email", text)}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
@@ -134,7 +144,7 @@ export default function SignupScreen() {
                 <Input
                   placeholder="12345678"
                   value={formData.studentNumber}
-                  onChangeText={(text) => handleChange('studentNumber', text)}
+                  onChangeText={(text) => handleChange("studentNumber", text)}
                   autoCapitalize="none"
                 />
               </View>
@@ -144,7 +154,7 @@ export default function SignupScreen() {
                 <Input
                   placeholder="+1234567890"
                   value={formData.phoneNumber}
-                  onChangeText={(text) => handleChange('phoneNumber', text)}
+                  onChangeText={(text) => handleChange("phoneNumber", text)}
                   keyboardType="phone-pad"
                 />
               </View>
@@ -154,14 +164,14 @@ export default function SignupScreen() {
                 <Input
                   placeholder="••••••••"
                   value={formData.password}
-                  onChangeText={(text) => handleChange('password', text)}
+                  onChangeText={(text) => handleChange("password", text)}
                   secureTextEntry
                 />
               </View>
 
-              <Button 
+              <Button
                 style={styles.submitButton}
-                onPress={handleSignup} 
+                onPress={handleSignup}
                 loading={loading}
               >
                 Sign Up
@@ -170,14 +180,16 @@ export default function SignupScreen() {
 
             <CardFooter style={styles.cardFooter}>
               <Text style={styles.footerText}>
-                Already have an account?{' '}
-                <Text style={styles.loginLink} onPress={() => router.push('/login')}>
+                Already have an account?{" "}
+                <Text
+                  style={styles.loginLink}
+                  onPress={() => router.push("/login")}
+                >
                   Sign in
                 </Text>
               </Text>
             </CardFooter>
           </Card>
-
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -187,32 +199,32 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fafafa', // zinc-50
+    backgroundColor: "#fafafa", // zinc-50
   },
   container: {
     flex: 1,
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 16,
   },
   card: {
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   cardHeader: {
-    alignItems: 'center',
-    textAlign: 'center',
+    alignItems: "center",
+    textAlign: "center",
   },
   logoBadge: {
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: '#f4f4f5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f4f4f5",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 16,
   },
   logoImage: {
@@ -230,15 +242,15 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   cardFooter: {
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   footerText: {
-    color: '#71717a', // zinc-500
+    color: "#71717a", // zinc-500
     fontSize: 14,
   },
   loginLink: {
-    color: '#09090b', // zinc-950
-    fontWeight: '500',
-    textDecorationLine: 'underline',
+    color: "#09090b", // zinc-950
+    fontWeight: "500",
+    textDecorationLine: "underline",
   },
 });

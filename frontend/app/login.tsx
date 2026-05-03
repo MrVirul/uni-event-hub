@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,32 +8,38 @@ import {
   Platform,
   Alert,
   Image,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '../constants/Config';
+} from "react-native";
+import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../constants/Config";
 
-
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Label } from "../components/ui/Label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/Card";
 
 export default function LoginScreen() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);
 
   const handleChange = (name: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -41,18 +47,17 @@ export default function LoginScreen() {
     const { email, password } = formData;
 
     if (!email || !password) {
-      Alert.alert('Error', 'Please enter both email and password');
+      Alert.alert("Error", "Please enter both email and password");
       return;
     }
 
     setLoading(true);
 
     try {
-      
       const response = await fetch(`${API_URL}/api/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -60,19 +65,18 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Invalid credentials');
+        throw new Error(data.message || "Invalid credentials");
       }
 
       // Login successful
-      await AsyncStorage.setItem('token', data.token);
-      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+      await AsyncStorage.setItem("token", data.token);
+      await AsyncStorage.setItem("user", JSON.stringify(data.user));
 
-      Alert.alert('Success', 'Login successful!', [
-        { text: 'OK', onPress: () => router.replace('/home') }
+      Alert.alert("Success", "Login successful!", [
+        { text: "OK", onPress: () => router.replace("/home") },
       ]);
-      
     } catch (error: any) {
-      Alert.alert('Login Failed', error.message);
+      Alert.alert("Login Failed", error.message);
     } finally {
       setLoading(false);
     }
@@ -80,23 +84,27 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-          
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
           <Card style={styles.card}>
             <CardHeader style={styles.cardHeader}>
               <View style={styles.logoBadge}>
                 <Image
-                  source={require('../assets/images/icon.png')}
+                  source={require("../assets/images/icon.png")}
                   style={styles.logoImage}
                   resizeMode="contain"
                 />
               </View>
               <CardTitle>Welcome back</CardTitle>
-              <CardDescription>Enter your credentials to access your account</CardDescription>
+              <CardDescription>
+                Enter your credentials to access your account
+              </CardDescription>
             </CardHeader>
 
             <CardContent style={styles.cardContent}>
@@ -105,7 +113,7 @@ export default function LoginScreen() {
                 <Input
                   placeholder="m@example.com"
                   value={formData.email}
-                  onChangeText={(text) => handleChange('email', text)}
+                  onChangeText={(text) => handleChange("email", text)}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
@@ -116,14 +124,14 @@ export default function LoginScreen() {
                 <Input
                   placeholder="••••••••"
                   value={formData.password}
-                  onChangeText={(text) => handleChange('password', text)}
+                  onChangeText={(text) => handleChange("password", text)}
                   secureTextEntry
                 />
               </View>
 
-              <Button 
+              <Button
                 style={styles.submitButton}
-                onPress={handleLogin} 
+                onPress={handleLogin}
                 loading={loading}
               >
                 Sign In
@@ -132,14 +140,16 @@ export default function LoginScreen() {
 
             <CardFooter style={styles.cardFooter}>
               <Text style={styles.footerText}>
-                Don't have an account?{' '}
-                <Text style={styles.signupLink} onPress={() => router.push('/signup')}>
+                Don't have an account?{" "}
+                <Text
+                  style={styles.signupLink}
+                  onPress={() => router.push("/signup")}
+                >
                   Sign up
                 </Text>
               </Text>
             </CardFooter>
           </Card>
-
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -149,32 +159,32 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fafafa', // zinc-50
+    backgroundColor: "#fafafa", // zinc-50
   },
   container: {
     flex: 1,
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 16,
   },
   card: {
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   cardHeader: {
-    alignItems: 'center',
-    textAlign: 'center',
+    alignItems: "center",
+    textAlign: "center",
   },
   logoBadge: {
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: '#f4f4f5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f4f4f5",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 16,
   },
   logoImage: {
@@ -192,15 +202,15 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   cardFooter: {
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   footerText: {
-    color: '#71717a', // zinc-500
+    color: "#71717a", // zinc-500
     fontSize: 14,
   },
   signupLink: {
-    color: '#09090b', // zinc-950
-    fontWeight: '500',
-    textDecorationLine: 'underline',
+    color: "#09090b", // zinc-950
+    fontWeight: "500",
+    textDecorationLine: "underline",
   },
 });

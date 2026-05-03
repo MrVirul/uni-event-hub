@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    paddingTop: Platform.OS === "ios" ? 44 : (StatusBar.currentHeight || 0),
+    paddingTop: Platform.OS === "ios" ? 44 : StatusBar.currentHeight || 0,
   },
   header: {
     flexDirection: "row",

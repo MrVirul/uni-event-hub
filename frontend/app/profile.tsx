@@ -1,17 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Platform, TouchableOpacity, StatusBar, TextInput, Alert, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import { SvgUri } from 'react-native-svg';
-import { Ionicons } from '@expo/vector-icons';
-import { API_URL } from '../constants/Config';
-import { Sidebar } from '../components/ui/Sidebar';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Platform,
+  TouchableOpacity,
+  StatusBar,
+  TextInput,
+  Alert,
+  Image,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import { SvgUri } from "react-native-svg";
+import { Ionicons } from "@expo/vector-icons";
+import { API_URL } from "../constants/Config";
+import { Sidebar } from "../components/ui/Sidebar";
 
-
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
-import { Label } from '../components/ui/Label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
+import { Label } from "../components/ui/Label";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -21,10 +38,10 @@ export default function ProfileScreen() {
   const [isEditing, setIsEditing] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [editForm, setEditForm] = useState({
-    name: '',
-    email: '',
-    studentNumber: '',
-    phoneNumber: ''
+    name: "",
+    email: "",
+    studentNumber: "",
+    phoneNumber: "",
   });
 
   useEffect(() => {
@@ -33,22 +50,21 @@ export default function ProfileScreen() {
 
   const fetchProfile = async () => {
     try {
-      const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem("token");
       if (!token) {
-        router.replace('/login');
+        router.replace("/login");
         return;
       }
 
-
       const response = await fetch(`${API_URL}/api/auth/profile`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch profile');
+        throw new Error("Failed to fetch profile");
       }
 
       const data = await response.json();
@@ -57,11 +73,11 @@ export default function ProfileScreen() {
         name: data.user.name,
         email: data.user.email,
         studentNumber: data.user.studentNumber,
-        phoneNumber: data.user.phoneNumber
+        phoneNumber: data.user.phoneNumber,
       });
     } catch (error) {
       console.error(error);
-      router.replace('/login');
+      router.replace("/login");
     } finally {
       setLoading(false);
     }
@@ -70,28 +86,28 @@ export default function ProfileScreen() {
   const handleUpdate = async () => {
     setUpdateLoading(true);
     try {
-      const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem("token");
       const response = await fetch(`${API_URL}/api/auth/profile`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(editForm)
+        body: JSON.stringify(editForm),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
+        throw new Error(data.message || "Failed to update profile");
       }
 
       setUser(data.user);
-      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+      await AsyncStorage.setItem("user", JSON.stringify(data.user));
       setIsEditing(false);
-      Alert.alert('Success', 'Profile updated successfully!');
+      Alert.alert("Success", "Profile updated successfully!");
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Alert.alert("Error", error.message);
     } finally {
       setUpdateLoading(false);
     }
@@ -113,12 +129,15 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Sidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
-      
+      <Sidebar
+        visible={sidebarVisible}
+        onClose={() => setSidebarVisible(false)}
+      />
+
       <View style={styles.headerBar}>
         <View style={styles.headerLeft}>
           <Image
-            source={require('../assets/images/icon.png')}
+            source={require("../assets/images/icon.png")}
             style={styles.logoImage}
             resizeMode="contain"
           />
@@ -136,20 +155,28 @@ export default function ProfileScreen() {
               <SvgUri uri={avatarUrl} width={80} height={80} />
             </View>
             {isEditing ? (
-              <View style={{ width: '100%', alignItems: 'center' }}>
+              <View style={{ width: "100%", alignItems: "center" }}>
                 <TextInput
-                  style={[styles.infoText, styles.editInput, { textAlign: 'center', fontWeight: 'bold', fontSize: 20 }]}
+                  style={[
+                    styles.infoText,
+                    styles.editInput,
+                    { textAlign: "center", fontWeight: "bold", fontSize: 20 },
+                  ]}
                   value={editForm.name}
-                  onChangeText={(text) => setEditForm({ ...editForm, name: text })}
+                  onChangeText={(text) =>
+                    setEditForm({ ...editForm, name: text })
+                  }
                   placeholder="Your Name"
                 />
               </View>
             ) : (
               <CardTitle>{user.name}</CardTitle>
             )}
-            <CardDescription>{user.role === 'admin' ? 'Administrator' : 'Student'}</CardDescription>
+            <CardDescription>
+              {user.role === "admin" ? "Administrator" : "Student"}
+            </CardDescription>
           </CardHeader>
-          
+
           <CardContent style={styles.content}>
             <View style={styles.infoRow}>
               <Label>Email</Label>
@@ -157,7 +184,9 @@ export default function ProfileScreen() {
                 <TextInput
                   style={[styles.infoText, styles.editInput]}
                   value={editForm.email}
-                  onChangeText={(text) => setEditForm({ ...editForm, email: text })}
+                  onChangeText={(text) =>
+                    setEditForm({ ...editForm, email: text })
+                  }
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
@@ -171,7 +200,9 @@ export default function ProfileScreen() {
                 <TextInput
                   style={[styles.infoText, styles.editInput]}
                   value={editForm.studentNumber}
-                  onChangeText={(text) => setEditForm({ ...editForm, studentNumber: text })}
+                  onChangeText={(text) =>
+                    setEditForm({ ...editForm, studentNumber: text })
+                  }
                 />
               ) : (
                 <Text style={styles.infoText}>{user.studentNumber}</Text>
@@ -183,7 +214,9 @@ export default function ProfileScreen() {
                 <TextInput
                   style={[styles.infoText, styles.editInput]}
                   value={editForm.phoneNumber}
-                  onChangeText={(text) => setEditForm({ ...editForm, phoneNumber: text })}
+                  onChangeText={(text) =>
+                    setEditForm({ ...editForm, phoneNumber: text })
+                  }
                   keyboardType="phone-pad"
                 />
               ) : (
@@ -191,35 +224,35 @@ export default function ProfileScreen() {
               )}
             </View>
           </CardContent>
-          
+
           <CardFooter style={styles.footer}>
-            <Button 
-              variant="default" 
-              style={styles.manageButton} 
-              onPress={() => router.push('/clubs/my')}
+            <Button
+              variant="default"
+              style={styles.manageButton}
+              onPress={() => router.push("/clubs/my")}
             >
               Manage My Clubs
             </Button>
             {isEditing ? (
-              <View style={{ gap: 8, width: '100%' }}>
-                <Button 
-                  variant="default" 
-                  style={styles.actionButton} 
+              <View style={{ gap: 8, width: "100%" }}>
+                <Button
+                  variant="default"
+                  style={styles.actionButton}
                   onPress={handleUpdate}
                   loading={updateLoading}
                 >
                   Save Changes
                 </Button>
-                <Button 
-                  variant="outline" 
-                  style={styles.actionButton} 
+                <Button
+                  variant="outline"
+                  style={styles.actionButton}
                   onPress={() => {
                     setIsEditing(false);
                     setEditForm({
                       name: user.name,
                       email: user.email,
                       studentNumber: user.studentNumber,
-                      phoneNumber: user.phoneNumber
+                      phoneNumber: user.phoneNumber,
                     });
                   }}
                 >
@@ -227,9 +260,9 @@ export default function ProfileScreen() {
                 </Button>
               </View>
             ) : (
-              <Button 
-                variant="outline" 
-                style={styles.actionButton} 
+              <Button
+                variant="outline"
+                style={styles.actionButton}
                 onPress={() => setIsEditing(true)}
               >
                 Edit Details
@@ -245,22 +278,22 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fafafa',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    backgroundColor: "#fafafa",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   headerBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderBottomWidth: 1,
-    borderBottomColor: '#f4f4f5',
+    borderBottomColor: "#f4f4f5",
   },
   headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
   },
   logoImage: {
@@ -270,38 +303,38 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#09090b',
+    fontWeight: "700",
+    color: "#09090b",
   },
   centerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fafafa',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fafafa",
   },
   container: {
     flex: 1,
     padding: 16,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   card: {
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 32,
   },
   avatarContainer: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginBottom: 16,
     borderWidth: 2,
-    borderColor: '#e4e4e7',
-    backgroundColor: '#f4f4f5',
+    borderColor: "#e4e4e7",
+    backgroundColor: "#f4f4f5",
   },
   content: {
     gap: 16,
@@ -312,23 +345,23 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 16,
-    color: '#09090b',
+    color: "#09090b",
   },
   editInput: {
     borderBottomWidth: 1,
-    borderBottomColor: '#e4e4e7',
+    borderBottomColor: "#e4e4e7",
     paddingVertical: 4,
-    color: '#09090b',
+    color: "#09090b",
   },
   footer: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 8,
     marginTop: 16,
   },
   manageButton: {
-    width: '100%',
+    width: "100%",
   },
   actionButton: {
-    width: '100%',
-  }
+    width: "100%",
+  },
 });
