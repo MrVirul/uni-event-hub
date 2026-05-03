@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../components/ui/Button';
@@ -18,7 +18,7 @@ export default function IndexScreen() {
         } else {
           setIsChecking(false);
         }
-      } catch (error) {
+      } catch {
         setIsChecking(false);
       }
     };
@@ -38,26 +38,30 @@ export default function IndexScreen() {
       <View style={styles.container}>
         <View style={styles.heroSection}>
           <View style={styles.logoBadge}>
-            <Text style={styles.logoEmoji}>🎓</Text>
+            <Image
+              source={require('../assets/images/icon.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
           <Text style={styles.title}>Uni Event Hub</Text>
           <Text style={styles.subtitle}>
             Connect with your campus community. Discover, join, and manage student clubs in one place.
           </Text>
         </View>
-        
+
         <View style={styles.actionSection}>
-          <Button 
-            onPress={() => router.push('/login')} 
-            size="lg" 
+          <Button
+            onPress={() => router.push('/login')}
+            size="lg"
             style={styles.primaryButton}
           >
             Get Started
           </Button>
-          <Button 
-            onPress={() => router.push('/signup')} 
-            size="lg" 
-            variant="outline" 
+          <Button
+            onPress={() => router.push('/signup')}
+            size="lg"
+            variant="outline"
             style={styles.secondaryButton}
           >
             Create Account
@@ -103,6 +107,11 @@ const styles = StyleSheet.create({
   },
   logoEmoji: {
     fontSize: 32,
+  },
+  logoImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
   },
   title: {
     fontSize: 36,

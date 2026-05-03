@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, StatusBar, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Sidebar } from '../components/ui/Sidebar';
@@ -27,8 +27,14 @@ export default function HomeScreen() {
       <Sidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
       
       <View style={styles.headerBar}>
-        <View style={{ width: 28 }} /> 
-        <Text style={styles.headerTitle}>Home</Text>
+        <View style={styles.headerLeft}>
+          <Image
+            source={require('../assets/images/icon.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
+          <Text style={styles.headerTitle}>Home</Text>
+        </View>
         <TouchableOpacity onPress={() => setSidebarVisible(true)}>
           <Ionicons name="menu" size={28} color="#09090b" />
         </TouchableOpacity>
@@ -62,6 +68,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#f4f4f5',
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  logoImage: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
   },
   headerTitle: {
     fontSize: 18,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -98,7 +98,14 @@ export default function EditClubScreen() {
             >
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     <Card style={styles.card}>
-                        <CardHeader>
+                        <CardHeader style={styles.cardHeader}>
+                            <View style={styles.logoBadge}>
+                                <Image
+                                    source={require('../../assets/images/icon.png')}
+                                    style={styles.logoImage}
+                                    resizeMode="contain"
+                                />
+                            </View>
                             <CardTitle>Edit Club</CardTitle>
                             <CardDescription>Update your community details</CardDescription>
                         </CardHeader>
@@ -170,6 +177,24 @@ const styles = StyleSheet.create({
         width: '100%',
         maxWidth: 400,
         alignSelf: 'center',
+    },
+    cardHeader: {
+        alignItems: 'center',
+        textAlign: 'center',
+    },
+    logoBadge: {
+        width: 48,
+        height: 48,
+        borderRadius: 12,
+        backgroundColor: '#f4f4f5',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    logoImage: {
+        width: 32,
+        height: 32,
+        borderRadius: 8,
     },
     cardContent: {
         gap: 16,

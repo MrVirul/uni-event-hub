@@ -10,6 +10,7 @@ import {
   Platform,
   StatusBar,
   TextInput,
+  Image,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -51,7 +52,14 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
         <View style={styles.sidebarContainer}>
           <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
-              <Text style={styles.logoText}>Uni Event Hub</Text>
+              <View style={styles.logoContainer}>
+                <Image
+                  source={require("../../assets/images/icon.png")}
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
+                <Text style={styles.logoText}>Uni Event Hub</Text>
+              </View>
               <TouchableOpacity onPress={onClose}>
                 <Ionicons name="close" size={24} color="#09090b" />
               </TouchableOpacity>
@@ -122,6 +130,16 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#f4f4f5",
+  },
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  logoImage: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
   },
   logoText: {
     fontSize: 18,

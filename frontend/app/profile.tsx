@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Platform, TouchableOpacity, StatusBar, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Platform, TouchableOpacity, StatusBar, TextInput, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -116,8 +116,14 @@ export default function ProfileScreen() {
       <Sidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
       
       <View style={styles.headerBar}>
-        <View style={{ width: 28 }} /> 
-        <Text style={styles.headerTitle}>Profile</Text>
+        <View style={styles.headerLeft}>
+          <Image
+            source={require('../assets/images/icon.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
+          <Text style={styles.headerTitle}>Profile</Text>
+        </View>
         <TouchableOpacity onPress={() => setSidebarVisible(true)}>
           <Ionicons name="menu" size={28} color="#09090b" />
         </TouchableOpacity>
@@ -251,6 +257,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#f4f4f5',
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  logoImage: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
   },
   headerTitle: {
     fontSize: 18,
