@@ -38,6 +38,12 @@ export default function MyClubsScreen() {
     fetchMyClubs();
   }, []);
 
+  const formatImageUrl = (url: string) => {
+    if (!url) return null;
+    if (url.startsWith("http") || url.startsWith("data:image")) return url;
+    return `${API_URL}${url}`;
+  };
+
   const fetchMyClubs = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -143,7 +149,7 @@ export default function MyClubsScreen() {
               <Card style={styles.clubCard}>
                 <CardHeader style={styles.cardHeader}>
                   <Image
-                    source={{ uri: item.image }}
+                    source={{ uri: formatImageUrl(item.image) || "https://api.dicebear.com/7.x/initials/png?seed=" + item.name }}
                     style={styles.clubImage}
                   />
                   <View style={{ flex: 1 }}>
@@ -155,21 +161,22 @@ export default function MyClubsScreen() {
                 </CardHeader>
                 <CardFooter style={styles.cardFooter}>
                   <Button
-                    variant="outline"
                     size="sm"
-                    style={styles.actionButton}
+                    style={styles.viewPostsButton}
                     onPress={() => router.push(`/clubs/${item._id}`)}
                   >
-                    Edit
+                    View Event Posts
                   </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    style={styles.actionButton}
-                    onPress={() => handleDeleteClub(item._id)}
-                  >
-                    Delete
-                  </Button>
+                  <View style={styles.actionButtonsRow}>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      style={styles.actionButton}
+                      onPress={() => handleDeleteClub(item._id)}
+                    >
+                      Delete
+                    </Button>
+                  </View>
                 </CardFooter>
               </Card>
             )}
@@ -228,12 +235,22 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   cardFooter: {
-    justifyContent: "flex-end",
-    gap: 8,
+    flexDirection: "column",
     padding: 12,
+    gap: 8,
+  },
+  viewPostsButton: {
+    width: "100%",
+  },
+  actionButtonsRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    width: "100%",
+    gap: 8,
   },
   actionButton: {
-    minWidth: 80,
+    flex: 1,
+    maxWidth: 100,
   },
   emptyContainer: {
     flex: 1,
