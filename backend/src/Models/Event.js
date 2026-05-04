@@ -10,6 +10,7 @@ const eventSchema = new mongoose.Schema({
   image: { type: String, default: null },
   capacity: { type: Number, required: true, min: 1 },
   registeredCount: { type: Number, default: 0 },
+  club: { type: mongoose.Schema.Types.ObjectId, ref: 'Club', required: true },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   status: { type: String, enum: ['Upcoming','Ongoing','Completed','Cancelled'], default: 'Upcoming' },
 }, { timestamps: true });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { API_URL } from "../../constants/Config";
 
 interface SidebarProps {
   visible: boolean;
@@ -24,6 +25,31 @@ interface SidebarProps {
 
 export function Sidebar({ visible, onClose }: SidebarProps) {
   const router = useRouter();
+  const [isClubOwner, setIsClubOwner] = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      checkClubOwnership();
+    }
+  }, [visible]);
+
+  const checkClubOwnership = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch(`${API_URL}/api/clubs/my/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsClubOwner(data.clubs && data.clubs.length > 0);
+      }
+    } catch (error) {
+      console.error("Error checking club ownership:", error);
+    }
+  };
 
   const handleNavigation = (path: string) => {
     onClose();
@@ -68,6 +94,14 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
             <View style={styles.navSection}>
               <TouchableOpacity
                 style={styles.navItem}
+                onPress={() => handleNavigation("/home")}
+              >
+                <Ionicons name="home-outline" size={20} color="#71717a" />
+                <Text style={styles.navText}>Home</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.navItem}
                 onPress={() => handleNavigation("/profile")}
               >
                 <Ionicons name="person-outline" size={20} color="#71717a" />
@@ -81,6 +115,18 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
                 <Ionicons name="people-outline" size={20} color="#71717a" />
                 <Text style={styles.navText}>My Clubs</Text>
               </TouchableOpacity>
+
+              {isClubOwner && (
+                <TouchableOpacity
+                  style={[styles.navItem, styles.activeNavItem]}
+                  onPress={() => handleNavigation("/events/add")}
+                >
+                  <Ionicons name="add-circle-outline" size={20} color="#09090b" />
+                  <Text style={[styles.navText, { color: "#09090b", fontWeight: "700" }]}>
+                    Add Event
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             <View style={styles.footer}>
@@ -157,6 +203,11 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginBottom: 4,
+  },
+  activeNavItem: {
+    backgroundColor: "#f4f4f5",
+    borderWidth: 1,
+    borderColor: "#e4e4e7",
   },
   navText: {
     fontSize: 16,
