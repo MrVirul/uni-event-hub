@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import clubRoutes from './routes/clubRoutes.js';
 import { connectDB } from './lib/db.js';
+import eventRoutes from './routes/eventRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 
 import fs from 'fs';
@@ -46,9 +47,6 @@ app.use(
   })
 );
 
-// Handle preflight requests for all routes (Express 5 compatible)
-app.options('/{*path}', cors());
-
 app.use(express.json());
 app.use('/uploads', express.static(uploadsDir));
 
@@ -61,6 +59,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/events', eventRoutes);
 app.use('/api/clubs', clubRoutes);
 
 // Error Handling Middleware (must be last)
