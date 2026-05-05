@@ -177,6 +177,12 @@ export default function ClubDashboardScreen() {
                       <Text style={styles.eventTitle} numberOfLines={1}>{event.title}</Text>
                       <View style={styles.eventActionsRow}>
                         <TouchableOpacity 
+                          onPress={() => router.push(`/events/registrations/${event._id}`)}
+                          style={styles.actionIconButton}
+                        >
+                          <Ionicons name="people-outline" size={18} color="#3b82f6" />
+                        </TouchableOpacity>
+                        <TouchableOpacity 
                           onPress={() => router.push(`/events/edit/${event._id}`)}
                           style={styles.actionIconButton}
                         >

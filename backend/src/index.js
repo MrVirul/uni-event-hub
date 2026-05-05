@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js';
 import clubRoutes from './routes/clubRoutes.js';
 import { connectDB } from './lib/db.js';
 import eventRoutes from './routes/eventRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -49,6 +50,8 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/clubs', clubRoutes);
+app.use('/api/bookings', bookingRoutes);
+
 
 // Error Handling Middleware (must be last)
 app.use(errorHandler);
