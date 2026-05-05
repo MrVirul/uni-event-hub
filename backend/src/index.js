@@ -54,7 +54,6 @@ app.use('/api/events', eventRoutes);
 app.use('/api/clubs', clubRoutes);
 app.use('/api/bookings', bookingRoutes);
 
-
 // Error Handling Middleware (must be last)
 app.use(errorHandler);
 

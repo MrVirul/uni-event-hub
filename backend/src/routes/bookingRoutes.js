@@ -1,12 +1,12 @@
 import express from 'express';
 const router = express.Router();
 import {
-    createBooking,
-    getBookingHistory,
-    updateBookingStatus,
-    updateBookingDetails,
-    deleteBooking,
-    getEventBookings
+  createBooking,
+  getBookingHistory,
+  updateBookingStatus,
+  updateBookingDetails,
+  deleteBooking,
+  getEventBookings,
 } from '../controller/bookingController.js';
 
 import { protect } from '../middleware/authMiddleware.js';
