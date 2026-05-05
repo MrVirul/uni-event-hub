@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -29,12 +29,24 @@ import {
 export default function LoginScreen() {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
+  React.useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      router.replace("/home");
+    }
+  };
+
+  const [formData, setFormData] = React.useState({
     email: "",
     password: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
+
 
   const handleChange = (name: string, value: string) => {
     setFormData((prev) => ({
@@ -53,6 +65,9 @@ export default function LoginScreen() {
 
     setLoading(true);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
@@ -60,8 +75,10 @@ export default function LoginScreen() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        signal: controller.signal,
       });
 
+      clearTimeout(timeoutId);
       const data = await response.json();
 
       if (!response.ok) {
@@ -76,11 +93,19 @@ export default function LoginScreen() {
         { text: "OK", onPress: () => router.replace("/home") },
       ]);
     } catch (error: any) {
-      Alert.alert("Login Failed", error.message);
+      if (error.name === "AbortError") {
+        Alert.alert(
+          "Network Error",
+          "The request timed out. Please check your internet connection and ensure the server is running.",
+        );
+      } else {
+        Alert.alert("Login Failed", error.message || "An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <SafeAreaView style={styles.safeArea}>

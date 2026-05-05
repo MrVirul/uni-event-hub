@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -29,7 +29,18 @@ import {
 export default function SignupScreen() {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
+  React.useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      router.replace("/home");
+    }
+  };
+
+  const [formData, setFormData] = React.useState({
     name: "",
     email: "",
     studentNumber: "",
@@ -37,7 +48,8 @@ export default function SignupScreen() {
     password: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
+
 
   const handleChange = (name: string, value: string) => {
     setFormData((prev) => ({
@@ -62,6 +74,10 @@ export default function SignupScreen() {
 
     setLoading(true);
 
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
     try {
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
@@ -69,8 +85,10 @@ export default function SignupScreen() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        signal: controller.signal,
       });
 
+      clearTimeout(timeoutId);
       const data = await response.json();
 
       if (!response.ok) {
@@ -83,14 +101,22 @@ export default function SignupScreen() {
       await AsyncStorage.setItem("user", JSON.stringify(data.user));
 
       Alert.alert("Success", "Account created successfully!", [
-        { text: "OK", onPress: () => router.replace("/profile") },
+        { text: "OK", onPress: () => router.replace("/home") },
       ]);
     } catch (error: any) {
-      Alert.alert("Registration Failed", error.message);
+      if (error.name === "AbortError") {
+        Alert.alert(
+          "Network Error",
+          "The request timed out. Please check your internet connection and ensure the server is running.",
+        );
+      } else {
+        Alert.alert("Registration Failed", error.message || "An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <SafeAreaView style={styles.safeArea}>

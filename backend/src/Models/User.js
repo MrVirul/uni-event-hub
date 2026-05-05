@@ -62,4 +62,11 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 
 const User = mongoose.model('User', userSchema);
 
+// Drop the legacy username index if it exists to prevent E11000 duplicate key errors
+// This happens if a 'username' field was previously in the schema with unique: true
+User.collection.dropIndex('username_1').catch((err) => {
+  // Index might not exist, which is fine
+});
+
 export default User;
+

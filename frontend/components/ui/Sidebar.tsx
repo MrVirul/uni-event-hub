@@ -34,22 +34,32 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
   }, [visible]);
 
   const checkClubOwnership = async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) return;
 
       const response = await fetch(`${API_URL}/api/clubs/my/all`, {
         headers: { Authorization: `Bearer ${token}` },
+        signal: controller.signal,
       });
 
+      clearTimeout(timeoutId);
       if (response.ok) {
         const data = await response.json();
         setIsClubOwner(data.clubs && data.clubs.length > 0);
       }
-    } catch (error) {
-      console.error("Error checking club ownership:", error);
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        console.error("Club ownership check timed out");
+      } else {
+        console.error("Error checking club ownership:", error);
+      }
     }
   };
+
 
   const handleNavigation = (path: string) => {
     onClose();
