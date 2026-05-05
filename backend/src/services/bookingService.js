@@ -69,5 +69,5 @@ export const deleteBooking = async (id) => {
 
 // Service to get all bookings for a specific event
 export const getEventBookings = async (eventId) => {
-    return await Booking.find({ eventId }).populate('userId', 'name email');
+    return await Booking.find({ eventId }).populate('userId', 'name email studentNumber');
 };

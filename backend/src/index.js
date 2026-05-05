@@ -16,6 +16,8 @@ const allowedOrigins = [
   'http://localhost:8081',
   'http://localhost:8080',
   'http://localhost:3000',
+  'http://192.168.1.82:8081',
+  'http://192.168.1.82:8080',
   'https://interunieventhub.vercel.app',
 ];
 

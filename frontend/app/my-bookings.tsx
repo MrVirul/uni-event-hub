@@ -50,17 +50,6 @@ export default function MyBookingsScreen() {
     }
   };
 
-  const handleAttend = async (id: string) => {
-    try {
-      await updateBookingStatus(id, 'Attended');
-      Alert.alert('Success', 'Status updated to Attended');
-      setBookings((prev) =>
-        prev.map((b) => (b._id === id ? { ...b, status: 'Attended' } : b))
-      );
-    } catch (error) {
-      Alert.alert('Error', 'Failed to update booking status');
-    }
-  };
 
   const handleOpenEdit = (booking: Booking) => {
     setSelectedBookingId(booking._id);
@@ -111,14 +100,6 @@ export default function MyBookingsScreen() {
       ) : null}
       
       <View style={styles.actionRow}>
-        {item.status === 'Pending' && (
-          <TouchableOpacity
-            style={[styles.actionButton, styles.attendButton]}
-            onPress={() => handleAttend(item._id)}
-          >
-            <Text style={styles.actionButtonText}>Attend</Text>
-          </TouchableOpacity>
-        )}
         <TouchableOpacity
           style={[styles.actionButton, styles.editButton]}
           onPress={() => handleOpenEdit(item)}
