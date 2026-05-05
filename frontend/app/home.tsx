@@ -11,6 +11,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   Dimensions,
+  Modal,
+  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,6 +20,7 @@ import { Sidebar } from "../components/ui/Sidebar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { API_URL } from "../constants/Config";
+import { createBooking } from "../services/BookingService";
 
 const { width } = Dimensions.get("window");
 
@@ -27,6 +30,14 @@ export default function HomeScreen() {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  
+  // Registration Modal State
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [contactNumber, setContactNumber] = useState("");
+  const [specialNotes, setSpecialNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -60,6 +71,34 @@ export default function HomeScreen() {
   const onRefresh = () => {
     setRefreshing(true);
     fetchEvents();
+  };
+
+  const handleOpenRegistration = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setContactNumber("");
+    setSpecialNotes("");
+    setModalVisible(true);
+  };
+
+  const handleRegisterSubmit = async () => {
+    if (!contactNumber.trim()) {
+      alert("Contact number is required.");
+      return;
+    }
+    
+    setSubmitting(true);
+    try {
+      if (selectedEventId) {
+        await createBooking(selectedEventId, contactNumber, specialNotes);
+        alert("Successfully registered for the event!");
+        setModalVisible(false);
+        fetchEvents();
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.message || "Failed to register. You might be already registered.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const formatImageUrl = (url: string) => {
@@ -126,6 +165,15 @@ export default function HomeScreen() {
             <Text style={styles.detailText}>{item.location}</Text>
           </View>
         </View>
+
+        <View style={styles.actionRow}>
+          <TouchableOpacity 
+            style={styles.registerBtn}
+            onPress={() => handleOpenRegistration(item._id)}
+          >
+            <Text style={styles.registerBtnText}>Register Now</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -182,6 +230,60 @@ export default function HomeScreen() {
           }
         />
       )}
+
+      {/* Registration Modal */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Complete Registration</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name="close" size={24} color="#71717a" />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.modalBody}>
+              <Text style={styles.inputLabel}>Contact Number *</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="e.g., +1 234 567 890"
+                value={contactNumber}
+                onChangeText={setContactNumber}
+                keyboardType="phone-pad"
+              />
+              
+              <Text style={styles.inputLabel}>Special Notes (Optional)</Text>
+              <TextInput
+                style={[styles.textInput, styles.textArea]}
+                placeholder="Dietary requirements, accessibility needs, etc."
+                value={specialNotes}
+                onChangeText={setSpecialNotes}
+                multiline
+                numberOfLines={3}
+                textAlignVertical="top"
+              />
+              
+              <TouchableOpacity 
+                style={[styles.submitModalBtn, submitting && styles.submitModalBtnDisabled]}
+                onPress={handleRegisterSubmit}
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <ActivityIndicator color="#ffffff" size="small" />
+                ) : (
+                  <Text style={styles.submitModalBtnText}>Confirm Registration</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -316,5 +418,86 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#a1a1aa",
     fontWeight: "500",
+  },
+  actionRow: {
+    borderTopWidth: 1,
+    borderTopColor: "#e4e4e7",
+    padding: 12,
+    flexDirection: "row",
+  },
+  registerBtn: {
+    flex: 1,
+    backgroundColor: "#3b82f6",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  registerBtnText: {
+    color: "#ffffff",
+    fontWeight: "600",
+    fontSize: 15,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContainer: {
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 20,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e4e4e7",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#09090b",
+  },
+  modalBody: {
+    padding: 20,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#3f3f46",
+    marginBottom: 8,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: "#e4e4e7",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: "#09090b",
+    marginBottom: 16,
+    backgroundColor: "#fafafa",
+  },
+  textArea: {
+    minHeight: 80,
+  },
+  submitModalBtn: {
+    backgroundColor: "#0f172a",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  submitModalBtnDisabled: {
+    backgroundColor: "#94a3b8",
+  },
+  submitModalBtnText: {
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 16,
   },
 });

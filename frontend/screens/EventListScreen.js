@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator, RefreshControl, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator, RefreshControl, Dimensions, Modal, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { API_URL } from '../config';
+import { createBooking } from '../services/BookingService';
 
 const { width } = Dimensions.get('window');
 
@@ -36,6 +37,13 @@ export default function EventListScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  // Registration Modal State
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [contactNumber, setContactNumber] = useState("");
+  const [specialNotes, setSpecialNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
   const fetchEvents = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/events`);
@@ -55,6 +63,34 @@ export default function EventListScreen({ navigation }) {
   const onRefresh = () => {
     setRefreshing(true);
     fetchEvents();
+  };
+
+  const handleOpenRegistration = (eventId) => {
+    setSelectedEventId(eventId);
+    setContactNumber("");
+    setSpecialNotes("");
+    setModalVisible(true);
+  };
+
+  const handleRegisterSubmit = async () => {
+    if (!contactNumber.trim()) {
+      alert("Contact number is required.");
+      return;
+    }
+    
+    setSubmitting(true);
+    try {
+      if (selectedEventId) {
+        await createBooking(selectedEventId, contactNumber, specialNotes);
+        alert("Successfully registered for the event!");
+        setModalVisible(false);
+        fetchEvents();
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to register. You might be already registered.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const renderUpcomingStory = ({ item }) => (
@@ -131,9 +167,18 @@ export default function EventListScreen({ navigation }) {
             </View>
 
             <View style={styles.actionRow}>
-              <View style={styles.viewDetailsBtn}>
-                <Text style={styles.viewDetailsText}>View Details</Text>
-              </View>
+              <TouchableOpacity 
+                style={styles.actionBtn} 
+                onPress={() => navigation.navigate('EventDetail', { eventId: item._id })}
+              >
+                <Text style={styles.actionBtnText}>View Details</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.actionBtn, styles.registerBtn]} 
+                onPress={() => handleOpenRegistration(item._id)}
+              >
+                <Text style={[styles.actionBtnText, styles.registerBtnText]}>Register Now</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableOpacity>
@@ -202,6 +247,59 @@ export default function EventListScreen({ navigation }) {
       >
         <Text style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
+
+      {/* Registration Modal */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Complete Registration</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Text style={{ fontSize: 24, color: '#71717a' }}>×</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.modalBody}>
+              <Text style={styles.inputLabel}>Contact Number *</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="e.g., +1 234 567 890"
+                value={contactNumber}
+                onChangeText={setContactNumber}
+                keyboardType="phone-pad"
+              />
+              
+              <Text style={styles.inputLabel}>Special Notes (Optional)</Text>
+              <TextInput
+                style={[styles.textInput, styles.textArea]}
+                placeholder="Dietary requirements, accessibility needs, etc."
+                value={specialNotes}
+                onChangeText={setSpecialNotes}
+                multiline
+                numberOfLines={3}
+                textAlignVertical="top"
+              />
+              
+              <TouchableOpacity 
+                style={[styles.submitModalBtn, submitting && styles.submitModalBtnDisabled]}
+                onPress={handleRegisterSubmit}
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <ActivityIndicator color="#ffffff" size="small" />
+                ) : (
+                  <Text style={styles.submitModalBtnText}>Confirm Registration</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -423,23 +521,32 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   actionRow: {
+    flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: '#E4E6EB',
     paddingTop: 15,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
   },
-  viewDetailsBtn: {
+  actionBtn: {
+    flex: 1,
     backgroundColor: '#E7F3FF',
     paddingVertical: 10,
-    paddingHorizontal: 20,
     borderRadius: 6,
-    width: '100%',
     alignItems: 'center',
+    marginHorizontal: 5,
   },
-  viewDetailsText: {
+  actionBtnText: {
     color: '#1877F2',
     fontWeight: 'bold',
     fontSize: 15,
+  },
+  registerBtn: {
+    backgroundColor: '#1877F2',
+  },
+  registerBtnText: {
+    color: 'white',
   },
   fab: {
     position: 'absolute',
@@ -480,5 +587,68 @@ const styles = StyleSheet.create({
   createFirstText: {
     color: 'white',
     fontWeight: 'bold',
-  }
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContainer: {
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 40,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e4e4e7",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#09090b",
+  },
+  modalBody: {
+    padding: 20,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#3f3f46",
+    marginBottom: 8,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: "#e4e4e7",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: "#09090b",
+    marginBottom: 16,
+    backgroundColor: "#fafafa",
+  },
+  textArea: {
+    minHeight: 80,
+  },
+  submitModalBtn: {
+    backgroundColor: "#0f172a",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  submitModalBtnDisabled: {
+    backgroundColor: "#94a3b8",
+  },
+  submitModalBtnText: {
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 16,
+  },
 });

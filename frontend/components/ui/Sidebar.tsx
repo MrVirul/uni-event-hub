@@ -116,6 +116,15 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
                 <Text style={styles.navText}>My Clubs</Text>
               </TouchableOpacity>
 
+              <TouchableOpacity
+                style={styles.navItem}
+                onPress={() => handleNavigation("/my-bookings")}
+              >
+                <Ionicons name="calendar-outline" size={20} color="#71717a" />
+                <Text style={styles.navText}>My Registrations</Text>
+              </TouchableOpacity>
+
+
               {isClubOwner && (
                 <TouchableOpacity
                   style={[styles.navItem, styles.activeNavItem]}

@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js';
 import clubRoutes from './routes/clubRoutes.js';
 import { connectDB } from './lib/db.js';
 import eventRoutes from './routes/eventRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -15,6 +16,8 @@ const allowedOrigins = [
   'http://localhost:8081',
   'http://localhost:8080',
   'http://localhost:3000',
+  'http://192.168.1.82:8081',
+  'http://192.168.1.82:8080',
   'https://interunieventhub.vercel.app',
 ];
 
@@ -49,6 +52,8 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/clubs', clubRoutes);
+app.use('/api/bookings', bookingRoutes);
+
 
 // Error Handling Middleware (must be last)
 app.use(errorHandler);
